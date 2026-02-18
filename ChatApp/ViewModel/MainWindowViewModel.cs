@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Net.NetworkInformation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net;
 
 namespace ChatApp.ViewModel
 {
@@ -32,8 +33,11 @@ namespace ChatApp.ViewModel
         private ObservableCollection<string> ipAddresses = new ObservableCollection<string>();
         public ObservableCollection<string> IpAddresses { get { return ipAddresses; } }
 
+        private string textBoxIp = "127.0.0.1";
+        public string TextBoxIp { get { return textBoxIp; } set { textBoxIp = value; OnPropertyChanged("TextBoxIp"); } }
+
         /// <summary>
-        /// The currently choosen IP address.
+        /// The currently choosen IP address in combo box.
         /// </summary>
         private string selectedIp = "127.0.0.1";
         public string SelectedIp { get { return selectedIp; } set { selectedIp = value;  } }
@@ -50,7 +54,7 @@ namespace ChatApp.ViewModel
         /// <summary>
         /// The port that the users enters in the textbox.
         /// </summary>
-        private string port = "10000";
+        private string port = "10000" ;
         public string Port
         {
             get { return port; }
@@ -115,6 +119,10 @@ namespace ChatApp.ViewModel
             else if (NetworkManager.IsPortOccupied(port))
             {
                 ErrorMessage = "The port " + port + " is currently occupied.";
+            } 
+            else if (!IPAddress.TryParse(selectedIp, out _))
+            {
+                ErrorMessage = "Please enter a valid IP address.";
             }
             else
             {
