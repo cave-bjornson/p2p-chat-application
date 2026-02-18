@@ -41,7 +41,7 @@ namespace ChatApp.ViewModel
         /// <summary>
         /// The name that the user enters in the textbox.
         /// </summary>
-        private string name;
+        private string name = string.Empty;
         public string Name { 
             get { return name; } 
             set { name = value; }
@@ -50,7 +50,7 @@ namespace ChatApp.ViewModel
         /// <summary>
         /// The port that the users enters in the textbox.
         /// </summary>
-        private string port;
+        private string port = "10000";
         public string Port
         {
             get { return port; }
@@ -119,7 +119,7 @@ namespace ChatApp.ViewModel
             else
             {
                 ErrorMessage = "";
-                NetworkManager.Instance.Listen(new UserModel("127.0.0.1", port, name));
+                NetworkManager.Instance.Listen(new UserModel(selectedIp, port, name));
                 ChatClientWindow chatClientWindow = new ChatClientWindow();
                 chatClientWindow.ShowDialog();
             }
