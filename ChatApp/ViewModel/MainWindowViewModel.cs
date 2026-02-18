@@ -1,18 +1,18 @@
-﻿using ChatApp.Model;
-using ChatApp.View;
-using ChatApp.ViewModel.Command;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Net.NetworkInformation;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Net;
+using ChatApp.Model;
+using ChatApp.View;
+using ChatApp.ViewModel.Command;
 
 namespace ChatApp.ViewModel
 {
@@ -25,36 +25,49 @@ namespace ChatApp.ViewModel
         /// Error message that contais a specific error message depending on what kind of error has occured.
         /// </summary>
         private string errorMessage = "";
-        public string ErrorMessage { get { return errorMessage; } set { errorMessage = value; OnPropertyChanged("ErrorMessage"); } }
+        public string ErrorMessage
+        {
+            get { return errorMessage; }
+            set
+            {
+                errorMessage = value;
+                OnPropertyChanged("ErrorMessage");
+            }
+        }
 
         /// <summary>
         /// A list of available IP-addresses to start listenening on.
         /// </summary>
         private ObservableCollection<string> ipAddresses = new ObservableCollection<string>();
-        public ObservableCollection<string> IpAddresses { get { return ipAddresses; } }
-
-        private string textBoxIp = "127.0.0.1";
-        public string TextBoxIp { get { return textBoxIp; } set { textBoxIp = value; OnPropertyChanged("TextBoxIp"); } }
+        public ObservableCollection<string> IpAddresses
+        {
+            get { return ipAddresses; }
+        }
 
         /// <summary>
         /// The currently choosen IP address in combo box.
         /// </summary>
         private string selectedIp = "127.0.0.1";
-        public string SelectedIp { get { return selectedIp; } set { selectedIp = value;  } }
+        public string SelectedIp
+        {
+            get { return selectedIp; }
+            set { selectedIp = value; }
+        }
 
         /// <summary>
         /// The name that the user enters in the textbox.
         /// </summary>
         private string name = string.Empty;
-        public string Name { 
-            get { return name; } 
+        public string Name
+        {
+            get { return name; }
             set { name = value; }
         }
 
         /// <summary>
         /// The port that the users enters in the textbox.
         /// </summary>
-        private string port = "10000" ;
+        private string port = "10000";
         public string Port
         {
             get { return port; }
@@ -65,18 +78,21 @@ namespace ChatApp.ViewModel
         /// Command to start the chat window.
         /// </summary>
         private ICommand startClient;
-        public ICommand StartClient { 
-            get {
+        public ICommand StartClient
+        {
+            get
+            {
                 if (startClient == null)
                 {
                     startClient = new LoginCommand(this);
                 }
-                return startClient; 
-            } 
+                return startClient;
+            }
             set { startClient = value; }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             if (PropertyChanged != null)
@@ -88,7 +104,8 @@ namespace ChatApp.ViewModel
         /// <summary>
         /// Constructor that setups event listeners and fetches all available IP addresses from the Network Manager.
         /// </summary>
-        public MainWindowViewModel() {
+        public MainWindowViewModel()
+        {
             NetworkManager.Instance.listenerFailedEvent += OnError;
             NetworkManager.Instance.listenerSuccessEvent += OnSuccess;
             ipAddresses.Add("127.0.0.1");
@@ -119,7 +136,7 @@ namespace ChatApp.ViewModel
             else if (NetworkManager.IsPortOccupied(port))
             {
                 ErrorMessage = "The port " + port + " is currently occupied.";
-            } 
+            }
             else if (!IPAddress.TryParse(selectedIp, out _))
             {
                 ErrorMessage = "Please enter a valid IP address.";
@@ -153,7 +170,7 @@ namespace ChatApp.ViewModel
             ErrorMessage = "";
             NetworkManager.Instance.Listen(new UserModel(selectedIp, port, name));
             ChatClientWindow chatClientWindow = new ChatClientWindow();
-            chatClientWindow.ShowDialog();                
+            chatClientWindow.ShowDialog();
         }
 
         /// <summary>
@@ -167,7 +184,8 @@ namespace ChatApp.ViewModel
             try
             {
                 portInt = Convert.ToInt32(port);
-            } catch (FormatException)
+            }
+            catch (FormatException)
             {
                 return false;
             }
